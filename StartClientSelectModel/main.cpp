@@ -79,7 +79,7 @@ int main()
 		KeyProcess();
 		Render();
 		Network();
-		Sleep(25);
+		Sleep(10);
 	}
 
 	closesocket(g_Socket);
@@ -117,7 +117,7 @@ void KeyProcess()
 	}
 	if (GetAsyncKeyState(VK_RIGHT))
 	{
-		g_VectorSession[searchIndex].x++;
+		g_VectorSession[searchIndex].x+=2;
 	}
 	if (GetAsyncKeyState(VK_UP))
 	{
@@ -128,14 +128,22 @@ void KeyProcess()
 		g_VectorSession[searchIndex].y++;
 	}
 
-	if (g_VectorSession[searchIndex].x > CConsole::SCREEN_WIDTH)
+	if (g_VectorSession[searchIndex].x >= CConsole::SCREEN_WIDTH)
 	{
-		g_VectorSession[searchIndex].x = CConsole::SCREEN_WIDTH - 1;
+		g_VectorSession[searchIndex].x = CConsole::SCREEN_WIDTH -1;
 	}
 
-	if (g_VectorSession[searchIndex].y> CConsole::SCREEN_HEIGHT)
+	if (g_VectorSession[searchIndex].x <0)
 	{
-		g_VectorSession[searchIndex].y = CConsole::SCREEN_HEIGHT - 1;
+		g_VectorSession[searchIndex].x = 0;
+	}
+	if (g_VectorSession[searchIndex].y > CConsole::SCREEN_HEIGHT-2)
+	{
+		g_VectorSession[searchIndex].y = CConsole::SCREEN_HEIGHT-2;
+	}
+	if (g_VectorSession[searchIndex].y<0)
+	{
+		g_VectorSession[searchIndex].y =0;
 	}
 	if (g_PrevX != g_VectorSession[searchIndex].x || g_PrevY != g_VectorSession[searchIndex].y)
 	{
@@ -159,8 +167,8 @@ void KeyProcess()
 
 void Render()
 {
-	
 	CConsole::GetInstance()->Buffer_Clear();
+	system("cls");
 	for (size_t i = 0; i < g_VectorSession.size(); i++)
 	{
 		
@@ -180,7 +188,6 @@ void Network()
 	FD_ZERO(&exceptSet);
 	FD_SET(g_Socket, &readSet);
 	FD_SET(g_Socket, &exceptSet);
-
 
 
 	timeval time;

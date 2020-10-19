@@ -55,16 +55,6 @@ void CConsole::Buffer_Clear(void)
 void CConsole::Sprite_Draw(int iX, int iY, char chSprite)
 {
 
-	if (iX<0 || iX> SCREEN_WIDTH - 2)
-	{
-		//printf("X가 범위를 초과하였습니다");
-		return;
-	}
-	if (iY<0 || iY> SCREEN_HEIGHT - 1)
-	{
-		//printf("Y가 범위를 초과하였습니다");
-		return;
-	}
 
 	//------------------------------------------
 	// 입력받은 좌표를 행렬에 넣어서, 문자열을 버퍼에집어넣는다

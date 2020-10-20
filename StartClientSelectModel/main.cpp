@@ -53,11 +53,14 @@ int main()
 	g_Socket = socket(AF_INET, SOCK_STREAM, 0);
 	u_long on = 1;
 
-	int retVal = ioctlsocket(g_Socket, FIONBIO, &on);
-	if (retVal == SOCKET_ERROR)
-	{
-		ERROR_LOG(L"ioctlsocket() error");
-	}
+	//--------------------------------------------------
+	// 블록소켓 ----> 논블록 소켓으로 전환.
+	//--------------------------------------------------
+	//int retVal = ioctlsocket(g_Socket, FIONBIO, &on);
+	//if (retVal == SOCKET_ERROR)
+	//{
+	//	ERROR_LOG(L"ioctlsocket() error");
+	//}
 
 	if (g_Socket == INVALID_SOCKET)
 	{
@@ -79,7 +82,7 @@ int main()
 		KeyProcess();
 		Render();
 		Network();
-		Sleep(10);
+		//Sleep(10);
 	}
 
 	closesocket(g_Socket);
@@ -117,7 +120,7 @@ void KeyProcess()
 	}
 	if (GetAsyncKeyState(VK_RIGHT))
 	{
-		g_VectorSession[searchIndex].x+=2;
+		g_VectorSession[searchIndex].x++;
 	}
 	if (GetAsyncKeyState(VK_UP))
 	{
@@ -128,9 +131,9 @@ void KeyProcess()
 		g_VectorSession[searchIndex].y++;
 	}
 
-	if (g_VectorSession[searchIndex].x >= CConsole::SCREEN_WIDTH)
+	if (g_VectorSession[searchIndex].x >= CConsole::SCREEN_WIDTH-2)
 	{
-		g_VectorSession[searchIndex].x = CConsole::SCREEN_WIDTH -1;
+		g_VectorSession[searchIndex].x = CConsole::SCREEN_WIDTH-2;
 	}
 
 	if (g_VectorSession[searchIndex].x <0)
@@ -168,7 +171,7 @@ void KeyProcess()
 void Render()
 {
 	CConsole::GetInstance()->Buffer_Clear();
-	system("cls");
+//	system("cls");
 	for (size_t i = 0; i < g_VectorSession.size(); i++)
 	{
 		
@@ -194,9 +197,10 @@ void Network()
 	time.tv_sec = 0;
 	time.tv_sec = 0;
 
+	
 	while (true)
 	{
-		int rtn = select(0, &readSet, NULL, &exceptSet, &time);
+		int rtn = select(0, &readSet, NULL, &exceptSet,&time);
 		if (rtn <=0)
 		{
 			return;

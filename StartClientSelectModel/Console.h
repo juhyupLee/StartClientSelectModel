@@ -53,7 +53,7 @@ class CConsole
 public:
 	enum
 	{
-		SCREEN_WIDTH = 80,
+		SCREEN_WIDTH = 81,
 		SCREEN_HEIGHT= 23
 	};
 private:

@@ -6,12 +6,11 @@
 #include <locale.h>
 #include <WS2tcpip.h>
 #include <vector>
-
+#include <stdio.h>
 #define PORT 3000
 #define SERVER_ADDR L"127.0.0.1"
+//#define SERVER_ADDR L"219.248.115.71"
 #define BUFFER_SIZE 16
-
-
 
 struct Session
 {
@@ -43,6 +42,7 @@ int main()
 	setlocale(LC_ALL, "Korean");
 
 	SOCKADDR_IN serverAddr;
+	WCHAR addrBuffer[128];
 
 
 	if (0 != WSAStartup(MAKEWORD(2, 2), &wsaData))
@@ -50,17 +50,20 @@ int main()
 		ERROR_LOG(L"WsaStartUp() Error");
 	}
 
+	//wprintf(L"접속할 주소를 입력하시오:");
+	//wscanf_s(L"%s", addrBuffer, (unsigned)_countof(addrBuffer));
+
 	g_Socket = socket(AF_INET, SOCK_STREAM, 0);
 	u_long on = 1;
 
 	//--------------------------------------------------
 	// 블록소켓 ----> 논블록 소켓으로 전환.
 	//--------------------------------------------------
-	//int retVal = ioctlsocket(g_Socket, FIONBIO, &on);
-	//if (retVal == SOCKET_ERROR)
-	//{
-	//	ERROR_LOG(L"ioctlsocket() error");
-	//}
+	int retVal = ioctlsocket(g_Socket, FIONBIO, &on);
+	if (retVal == SOCKET_ERROR)
+	{
+		ERROR_LOG(L"ioctlsocket() error");
+	}
 
 	if (g_Socket == INVALID_SOCKET)
 	{
@@ -71,12 +74,12 @@ int main()
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(PORT);
 	InetPton(AF_INET, SERVER_ADDR, &serverAddr.sin_addr.S_un.S_addr);
+	//InetPton(AF_INET, addrBuffer, &serverAddr.sin_addr.S_un.S_addr);
 
 	if (0 != connect(g_Socket, (sockaddr*)&serverAddr, sizeof(serverAddr)))
 	{
 		ERROR_LOG(L"connect() error");
 	}
-
 	while (true)
 	{
 		KeyProcess();
@@ -96,7 +99,6 @@ void KeyProcess()
 	{
 		return;
 	}
-
 	int searchIndex = -1;
 
 	for (size_t i = 0; i < g_VectorSession.size(); i++)
@@ -138,7 +140,7 @@ void KeyProcess()
 
 	if (g_VectorSession[searchIndex].x <0)
 	{
-		g_VectorSession[searchIndex].x = 0;
+		g_VectorSession[searchIndex].x = -1;
 	}
 	if (g_VectorSession[searchIndex].y > CConsole::SCREEN_HEIGHT-2)
 	{
